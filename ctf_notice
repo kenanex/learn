@@ -1,0 +1,17 @@
+CTF
+1. session
+	1.1 session的构造方式和框架有关，flask(python web框架) session构造需要提供secret和salt, salt默认'cookie-session'
+2. jwt
+	2.1 jwt编解码网站：https://jwt.io/，编码需要私钥，解码需要公钥。payload、claim可以直接接码得到，因此拿到私钥即可构造jwt, go：jwt.NewWithClaims.signedstring()
+3. ssti 服务端文本注入
+	3.1 在输入框{{7*7}}, 回显的位置显示49代表有ssti漏洞，可以{{config}}查看服务端配置信息
+4. ssrf 服务端请求伪造
+	4.1 常见于头像图片上传之类的输入框，如果上传后会回显结果，可以尝试在输入框输入需要访问的内网地址，从回显处获得结果。
+	4.2 localhost、127.0.0.1如果被拦截，可以尝试ipv6地址：http://[::0.0.0.1]:8080/flag
+5. xss 跨网站指令
+	1.1 反射型(js放url上)，存储型(将js通过输入框写入存储，其他人在页面读取输入框内容出发js调用)，通常为存储型，构造xss服务url,用以接收获取的访问者数据
+6. web请求头
+	6.1 X-Forwarded-For 请求原始地址，可用10.(a类)/192.168(c类)/172.16(b类)开头的内部地址伪装内网请求
+7. 文件隐写
+	7.1 查看头：xxd -l 32 private_0.png | head，查看尾： xxd -s -32 private_0.png; 或者zsteg检测隐写
+	7.2 提取分离文件(假设zsteg结果offset = 0x45)：dd if=private_0.png of=private_0.ts bs=1 skip=69 
